@@ -1,6 +1,8 @@
-package part_1.config;
+package part_1;
 
 import java.util.Scanner;
+
+import sun.jvm.hotspot.runtime.ConstructionException;
 
 public class Main {
 	public static void main(String[] args) {
@@ -18,15 +20,15 @@ public class Main {
 				case 1 ->
 					start.new_relation(sc);
 				case 2 ->
-					start.new_preference();
+					start.new_preference(sc);
 				case 3 -> {
-					sc.close();
-					start.fin_config();
-					return;
+					break;
 				}
 				default ->
 					System.out.println("Invalid answer");
 			}
 		}
+		
+		// Construction start = new 
 	}
 }
