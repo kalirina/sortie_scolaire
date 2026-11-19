@@ -13,6 +13,19 @@ public class Configuration {
 	private List<List<Character>> relations;
 	private Map<Character, List<Integer>> preferences;
 	
+	public int get_n() {
+		return n;
+	}
+	public List<Character> get_s() {
+		return studs;
+	}
+	public List<List<Character>> get_r() {
+		return relations;
+	}
+	public Map<Character, List<Integer>> get_p() {
+		return preferences;
+	}
+	
 	public void demarrer(Scanner sc) {
 		System.out.println("Bienvenue au système de repartition de vos debils dans les chambres séparés");
 		System.out.println("Veuillez saisir le nombre de cachalotes:");
@@ -114,7 +127,7 @@ public class Configuration {
 				boolean problem = false;
 				for (int i = 1; i < all.length; i++) {
 					int num = Integer.parseInt(all[i]);
-					if (num < 0 || num > n) {
+					if (num < 1 || num > n) {
 						System.out.println("Mauvais numero de chambre");
 						problem = true;
 						break;
@@ -134,5 +147,13 @@ public class Configuration {
 				
 			}
 		}
+	}
+	
+	public boolean ready_to_construction() {
+		if (preferences.size() != n) {
+			System.out.println("Les préférnces ne sont pas définies pour toutes les personnes");
+			return false;
+		}
+		return true;
 	}
 }
