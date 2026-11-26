@@ -73,34 +73,37 @@ public class Configuration {
 			String answer = sc.nextLine();
 			if (answer.equals("0"))
 				return;
-			else {
-				String[] pers = answer.trim().split("\\s+");
-				if (pers.length != 2) {
-					System.out.println("Invalid answer");
-					continue;
-				}
-				
-				char p1 = pers[0].charAt(0);
-				char p2 = pers[1].charAt(0);
-				
-				if (!studs.contains(p1) || !studs.contains(p2)) {
-					System.out.println("Cette personne n'existe pas");
-					continue;
-				}
-				else if (relations.contains(List.of(p1,p2)) || relations.contains(List.of(p2,p1))) {
-					System.out.println("Cette relation existe deja");
-					continue;
-				}
-				else if (p1 == p2) {
-					System.out.println("Impossible pour la meme personne");
-					continue;
-				}
-				else {
-					this.relations.add(List.of(p1,p2));
-					System.out.println("Relation ajouté");
-				}
+			
+			String[] pers = answer.trim().split("\\s+");
+			if (pers.length != 2) {
+				System.out.println("Invalid answer");
+				continue;
+			}
+			
+			char p1 = pers[0].charAt(0);
+			char p2 = pers[1].charAt(0);
+			
+			String err = ajouterRelation(p1, p2);
+			if (err != null) {
+				System.out.println(err);
+			} else {
+				System.out.println("Relation ajouté");
 			}
 		}
+	}
+	
+	public String ajouterRelation(char p1, char p2) {
+		if (!studs.contains(p1) || !studs.contains(p2)) {
+			return "Cette personne n'existe pas";
+		}
+		if (relations.contains(List.of(p1,p2)) || relations.contains(List.of(p2,p1))) {
+			return "Cette relation existe deja";
+		}
+		if (p1==p2) {
+			return "Impossible pour la meme personne";
+		}
+		relations.add(List.of(p1, p2));
+		return null;
 	}
 	
 	public void new_preference(Scanner sc) {
@@ -110,50 +113,79 @@ public class Configuration {
 			String answer = sc.nextLine();
 			if (answer.equals("0"))
 				return;
-			else {
-				String[] all = answer.trim().split("\\s+");
-				if (all.length != n + 1) {
-					System.out.println("La reponse n'est pas complete");
-					continue;
-				}
-				
-				char person = all[0].charAt(0);
-				if (!studs.contains(person)) {
-					System.out.println("Cette personne n'existe pas");
-					continue;
-				}
-				
-				List<Integer> prefs = new ArrayList<>();
-				boolean problem = false;
-				for (int i = 1; i < all.length; i++) {
-					int num = Integer.parseInt(all[i]);
-					if (num < 1 || num > n) {
-						System.out.println("Mauvais numero de chambre");
-						problem = true;
-						break;
-					}
-					else if (prefs.contains(num)) {
-						System.out.println("Les chambres doivent etre distinctes");
-						problem = true;
-						break;
-					}
-					else
-						prefs.add(num);
-				}
-				if (!problem) {
-					preferences.put(person, prefs);
-					System.out.println("Préférence ajouté");
-				}
-				
+			
+			String[] all = answer.trim().split("\\s+");
+			if (all.length != n + 1) {
+				System.out.println("La reponse n'est pas complete");
+				continue;
 			}
+			
+			char person = all[0].charAt(0);
+			List<Integer> prefs = new ArrayList<>();
+			for (int i = 1; i < all.length; i++) {
+				prefs.add(Integer.parseInt(all[i]));
+			}
+			
+			String err = ajouterPreference(person, prefs);
+	        if (err != null) {
+	        	System.out.println(err);
+	        } else {
+	        	System.out.println("Préférence ajouté");
+	        }
 		}
 	}
 	
+	public String ajouterPreference(char p, List<Integer> prefs) {
+		if (!studs.contains(p)) {
+			return "Cette personne n'existe pas";
+		}
+		if (prefs.size() !=n) {
+			return "La reponse n'est pas complete";
+		}
+		
+		List<Integer> vus = new ArrayList<>();
+		for (int num : prefs) {
+			if (num<1 || num>n) {
+				return "Mauvais numero de chambre";
+			}
+			if (vus.contains(num)) {
+				return "Les chambres doivent etre distinctes";
+			}
+			vus.add(num);
+		}
+		
+		preferences.put(p, new ArrayList<>(prefs));
+		return null;
+	}
+	
+	public List<Character> personnesSansPreferences() {
+		List<Character> missing = new ArrayList<>();
+		for (char p : studs) {
+			if (!preferences.containsKey(p)) {
+				missing.add(p);
+			}
+		}
+		return missing;
+	}
+	
 	public boolean ready_to_construction() {
-		if (preferences.size() != n) {
+		List<Character> missing = personnesSansPreferences();
+		if (!missing.isEmpty()) {
 			System.out.println("Les préférnces ne sont pas définies pour toutes les personnes");
 			return false;
 		}
 		return true;
+	}
+	
+	public void initialiser(int n) {
+	    this.n = n;
+	    relations = new ArrayList<>();
+	    preferences = new HashMap<>();
+	    studs = new ArrayList<>();
+	    char ascii = 'A';
+	    for (int i = 0; i < n; i++) {
+	        studs.add(ascii);
+	        ascii++;
+	    }
 	}
 }

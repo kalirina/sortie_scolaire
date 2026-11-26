@@ -48,7 +48,7 @@ public class Construction {
 		
 		for (int i = 0; i < n; i++) {
 			List<Integer> p = preferences.get(studs.get(i));
-			for (int j = 0; j <= p.size(); j++) {
+			for (int j = 0; j < p.size(); j++) {
 				if (rooms.contains(p.get(j))) {
 					affectations.put(studs.get(i), p.get(j));
 					rooms.remove(p.get(j));
@@ -81,26 +81,20 @@ public class Construction {
 			if (answer.equals("0")) {
 				return;
 			}
-			else {
-				String[] pers = answer.trim().split("\\s+");
-				if (pers.length != 2) {
-					System.out.println("Invalid answer");
-					continue;
-				}
-				
-				char p1 = pers[0].charAt(0);
-				char p2 = pers[1].charAt(0);
-				
-				if (!studs.contains(p1) || !studs.contains(p2)) {
-					System.out.println("Cette personne n'existe pas");
-					continue;
-				}
-				int c1 = affectations.get(p1);
-				int c2 = affectations.get(p2);
-				affectations.replace(p1, c2);
-				affectations.replace(p2, c1);
-				calculer_score();
+			
+			String[] pers = answer.trim().split("\\s+");
+			if (pers.length != 2) {
+				System.out.println("Invalid answer");
+				continue;
 			}
+			
+			char p1 = pers[0].charAt(0);
+			char p2 = pers[1].charAt(0);
+			
+			String err = echanger(p1, p2);
+	        if (err != null) {
+	            System.out.println(err);
+	        }
 		}
 	}
 	
@@ -143,5 +137,16 @@ public class Construction {
 					break;
 			}
 		}
+	}
+	
+	public String echanger(char p1, char p2) {
+	    if (!studs.contains(p1) || !studs.contains(p2))
+	        return "Cette personne n'existe pas";
+	    int c1 = affectations.get(p1);
+	    int c2 = affectations.get(p2);
+	    affectations.replace(p1, c2);
+	    affectations.replace(p2, c1);
+	    calculer_score();
+	    return null;
 	}
 }
