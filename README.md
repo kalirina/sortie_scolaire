@@ -27,4 +27,4 @@ Cette première partie consiste à mettre en place une répartition initiale na�
 
 #### Interface utilisateur :
 
-- **Frontend** : Développement d'une interface utilisateur permettant de configurer le groupe, de visualiser les affectations des chambres et d'interagir avec le programme.
+- **Frontend (en développement)** : Développement d'une interface utilisateur permettant de configurer le groupe, de visualiser les affectations des chambres et d'interagir avec le programme.
